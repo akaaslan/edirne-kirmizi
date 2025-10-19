@@ -7,6 +7,8 @@ import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import Story from "./pages/Story";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 // Products and Blog pages removed for promo-only site
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -19,7 +21,9 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
-        <Route path="/hikaye" element={<Story />} />
+  <Route path="/hikaye" element={<Story />} />
+  <Route path="/urunler" element={<Products />} />
+  <Route path="/urunler/:id" element={<ProductDetail />} />
   {/* product and blog routes removed — site is promo-only */}
         <Route path="/hakkimizda" element={<About />} />
         <Route path="/iletisim" element={<Contact />} />

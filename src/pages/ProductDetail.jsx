@@ -1,29 +1,35 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import products from "../data/products";
 
 export default function ProductDetail(){
   const { id } = useParams();
-  // placeholder data (ileride API'den çekilecek)
+  const navigate = useNavigate();
+  const product = products.find(p => p.id === id);
+
+  if (!product) return (
+    <section className="section"><div className="container"><h2>Ürün bulunamadı</h2></div></section>
+  );
+
   return (
-    <>
-      <Helmet><title>Ürün | Edirne Kırmızısı</title></Helmet>
-      <section className="section">
-        <div className="container">
-          <h2 style={{fontFamily:"var(--font-serif)", color:"var(--edirne)"}}>Ürün: {id}</h2>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 320px", gap:"1rem", marginTop:"1rem"}}>
-            <div>
-              <div style={{height:320, background:"#f5f5f5", borderRadius:8}}/>
-              <p style={{marginTop:"0.8rem", color:"var(--muted)"}}>Detaylı açıklama burada yer alacak. Malzeme, ölçü, bakım önerileri ve hikâye.</p>
+    <section className="section">
+      <Helmet><title>{product.title} | Edirne Kırmızısı</title></Helmet>
+      <div className="container">
+        <div style={{display:'flex', gap:20, alignItems:'flex-start', flexWrap:'wrap'}}>
+          <div style={{flex:'0 0 360px'}}>
+            <img src={product.img} alt={product.title} style={{width:'100%', borderRadius:12}} />
+          </div>
+          <div style={{flex:1}}>
+            <h2 style={{fontFamily:'var(--font-serif)', color:'var(--edirne)'}}>{product.title}</h2>
+            <p style={{color:'var(--muted)', fontSize:18}}>{product.price}</p>
+            <div style={{display:'flex', gap:8, marginTop:12}}>
+              <a href={product.url} target="_blank" rel="noreferrer"><button className="primary buy">Trendyol'da Aç</button></a>
+              <button className="primary" onClick={() => navigate('/urunler')}>Geri</button>
             </div>
-            <aside className="card">
-              <p style={{fontWeight:700}}>Fiyat: —</p>
-              <p style={{color:"var(--muted)", marginTop:6}}>Stok: Hazır</p>
-              <button className="primary" style={{width:"100%", marginTop:12}}>Sepete Ekle (yakında)</button>
-            </aside>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

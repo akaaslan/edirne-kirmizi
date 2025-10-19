@@ -2,7 +2,9 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
+import HeroCarousel from "../components/HeroCarousel";
 import { Link } from "react-router-dom";
+import { title } from "framer-motion/client";
 
 export default function Home(){
   return (
@@ -14,10 +16,11 @@ export default function Home(){
 
       <main>
         <section className="hero">
+          <HeroCarousel />
           <div className="container reveal">
             <motion.div initial={{opacity:0, y:12}} animate={{opacity:1, y:0}} transition={{duration:0.7}}>
-              <h1>Edirne Kırmızısı — Zamana Direnen Renk</h1>
-              <p>Osmanlı'dan günümüze uzanan, doğal pigmentlerin ve zanaatkârlığın izlerini taşıyan bu tonun hikâyesini keşfedin.</p>
+              <h1 style={{color: 'var(--dark)'}}>Edirne Kırmızısı — Zamana Direnen Renk</h1>
+              <p style={{color: 'rgba(0,0,0,0.9)', textAlign: 'center'}}>Osmanlı'dan günümüze uzanan, doğal pigmentlerin ve zanaatkârlığın izlerini taşıyan bu tonun hikâyesini keşfedin.</p>
               <Link to="/hikaye"><button className="primary">Hikâyeyi Keşfet</button></Link>
             </motion.div>
           </div>
@@ -36,6 +39,9 @@ export default function Home(){
               },{
                 title: 'Renk Örnekleri',
                 desc: 'Pigment örnekleri ve bakım önerileri.'
+              },{
+                title   : 'Ev Dekorasyonu',
+                desc    : 'Edirne Kırmızısı ile yaşam alanlarınızı renklendirin.'
               }].map((c, i) => (
                 <motion.div key={c.title} initial={{opacity:0, y:8}} animate={{opacity:1, y:0}} transition={{delay:0.08*i, duration:0.45}} className="card">
                   <h3>{c.title}</h3>

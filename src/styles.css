@@ -69,6 +69,29 @@ body{
 .nav-links li a::after{ content: ''; position:absolute; left:0; right:0; bottom:-6px; height:2px; background:transparent; transition:background 180ms }
 .nav-links li:hover a::after{ background:var(--edirne) }
 
+/* scrolled navbar background */
+.navbar{
+  transition: background-color 220ms ease, box-shadow 220ms ease, border-bottom-color 220ms ease;
+}
+.navbar.scrolled{
+  background-color: rgba(150, 57, 50, 0.836); /* requested: 150,56,50,0.6 */
+  border-bottom-color: rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* text and control colors when navbar is scrolled for legibility */
+.navbar.scrolled .logo,
+.navbar.scrolled .nav-links a {
+  color: var(--ivory) !important;
+  transition: color 200ms ease;
+}
+.navbar.scrolled .nav-links li a::after{ background: rgba(255,255,255,0.18); }
+.navbar.scrolled .mobile-toggle .hamburger,
+.navbar.scrolled .mobile-toggle .hamburger::before,
+.navbar.scrolled .mobile-toggle .hamburger::after{
+  background: var(--ivory);
+}
+
 /* mobile toggle hidden by default, visible on small screens */
 .mobile-toggle{display:none}
 
@@ -82,6 +105,14 @@ body{
   padding:4rem 0;
   background: linear-gradient(180deg, rgba(156,30,36,0.08), rgba(156,30,36,0.04));
 }
+/* ensure absolutely positioned carousel is limited to hero area */
+.hero{ position:relative; overflow:hidden }
+
+/* hero carousel container sits behind the content */
+.hero-carousel{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none }
+.hero-slide{ position:absolute; inset:0; background-size:cover; background-position:center; background-repeat:no-repeat; will-change:transform,opacity }
+.hero-overlay{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(156,30,36,0.06), rgba(250,248,243,0.35)); z-index:1; pointer-events:none }
+.hero .container{ position:relative; z-index:2 }
 .hero h1{
   font-family: var(--font-sans);
   font-size:clamp(1.6rem, 3.2vw, 2.8rem);
@@ -120,6 +151,45 @@ body{
 .card h3{margin:0 0 0.5rem 0; font-family: var(--font-sans); color:var(--edirne); font-size:1.15rem}
 .card p{margin:0; color:var(--muted)}
 
+/* products grid */
+.products-grid{grid-template-columns: repeat(3, 1fr);}
+.product-card{display:flex; gap:1rem; align-items:center}
+.product-media img{width:120px; height:120px; object-fit:cover; border-radius:10px}
+.product-card{transition: transform 160ms ease, box-shadow 160ms ease}
+.product-card:hover{transform: translateY(-6px); box-shadow:0 18px 48px rgba(0,0,0,0.12)}
+.product-body{flex:1}
+
+/* Story gallery: alternating image left/right */
+.story-pair{display:flex; gap:2rem; align-items:center; margin:1.5rem 0}
+.story-pair:nth-child(even){flex-direction:row-reverse}
+.story-pair .story-media{flex:0 0 42%; max-width:42%}
+.story-pair .story-body{flex:1}
+.story-media img{width:100%; height:100%; object-fit:cover; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.08)}
+
+@media (max-width:900px){
+  .products-grid{grid-template-columns:repeat(2,1fr)}
+  .product-card{flex-direction:column; align-items:flex-start}
+  .product-media img{width:100%; height:220px}
+  .story-pair{flex-direction:column}
+  .story-pair:nth-child(even){flex-direction:column}
+  .story-pair .story-media{max-width:100%}
+}
+
+@media (max-width:640px){
+  .primary.large{ width:90%; display:block; text-align:center }
+  .products-grid{grid-template-columns:1fr}
+}
+
+/* active page indicator */
+.pagination .primary.active{ position:relative }
+
+/* sliding indicator (absolute positioned, moved by JS) */
+.pagination .indicator{ position:absolute; bottom:-15px; left:0; width:12px; height:12px; background:var(--edirne); border-radius:50%; transform:translateX(0); transition:transform 260ms cubic-bezier(.2,.8,.2,1), opacity 160ms ease; opacity:0 }
+
+/* pagination */
+.pagination .primary{ padding:8px 12px; border-radius:8px }
+.pagination .primary.active{ background:var(--edirne); box-shadow:0 8px 20px rgba(156,30,36,0.12) }
+
 /* footer */
 .footer{
   margin-top:2rem;
@@ -129,6 +199,18 @@ body{
   text-align:center;
   font-size:0.95rem;
 }
+
+.footer-icons a{
+  color: #ddd;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  border-radius:8px;
+  transition: background 180ms ease, color 180ms ease, transform 120ms ease;
+}
+.footer-icons a:hover{ color:var(--ivory); background: rgba(255,255,255,0.04); transform: translateY(-2px) }
 
 /* forms */
 .input, textarea{
@@ -148,27 +230,55 @@ button.primary{
   cursor:pointer;
   font-weight:700;
   box-shadow: 0 6px 18px rgba(156,30,36,0.12);
-  transition:transform 140ms ease, box-shadow 140ms ease;
+  transition: transform 140ms ease, box-shadow 140ms ease, background-color 180ms ease, color 180ms ease, border 180ms ease;
 }
 button.primary:active{transform:translateY(1px)}
+
+/* buy button variant */
+.primary.buy{ background: #c0392b; box-shadow: 0 6px 18px rgba(192,57,43,0.12)}
+.primary.buy:hover{ background:#a52822 }
+
+/* larger primary button for 'İncele' */
+.primary.large{ padding:0.85rem 1.2rem; font-size:1rem }
+.primary.large:hover{ background:var(--ivory); color:var(--edirne); border:1px solid rgba(0,0,0,0.06) }
+.primary.large:focus{ outline:3px solid rgba(156,30,36,0.12); outline-offset:2px }
 
 /* responsive */
 @media (max-width:900px){
 }
 @media (max-width:640px){
   .nav-links{display:none}
-  .mobile-toggle{display:inline-flex}
-  .mobile-toggle .hamburger{width:22px; height:2px; background:var(--dark); display:block; position:relative}
-  .mobile-toggle .hamburger::before, .mobile-toggle .hamburger::after{ content:''; position:absolute; left:0; right:0; height:2px; background:var(--dark)}
+  .mobile-toggle{display:inline-flex; order:2}
+  .mobile-toggle .hamburger{width:22px; height:2px; background:var(--dark); display:block; position:relative; transition:background 180ms ease}
+  .mobile-toggle .hamburger::before, .mobile-toggle .hamburger::after{ content:''; position:absolute; left:0; width:100%; height:2px; background:var(--dark); transition: transform 220ms cubic-bezier(.2,.8,.2,1), top 220ms }
   .mobile-toggle .hamburger::before{ top:-7px }
   .mobile-toggle .hamburger::after{ top:7px }
   .mobile-toggle{border:none; background:transparent; padding:8px; align-items:center; cursor:pointer}
+  /* transform the lines around their center, no translate so they don't move */
   .mobile-toggle[aria-expanded="true"] .hamburger{ background:transparent }
-  .mobile-toggle[aria-expanded="true"] .hamburger::before{ transform: rotate(45deg) translate(3px, 3px) }
-  .mobile-toggle[aria-expanded="true"] .hamburger::after{ transform: rotate(-45deg) translate(3px, -3px) }
+  .mobile-toggle[aria-expanded="true"] .hamburger::before{ transform: rotate(45deg); top:0 }
+  .mobile-toggle[aria-expanded="true"] .hamburger::after{ transform: rotate(-45deg); top:0 }
   .mobile-menu{ position:fixed; top:64px; right:12px; background:var(--ivory); padding:1rem; border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.12); z-index:120 }
   .mobile-menu ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.5rem }
 }
+
+/* Footer: on small screens, stack and left-align text */
+@media (max-width:640px){
+  .footer .container > div{ flex-direction:column; align-items:flex-start; gap:8px }
+  .footer-icons{ margin-top:6px }
+}
+
+/* Mobile menu link styling: remove underline and use brand-dark shade */
+.mobile-menu ul li a{
+  text-decoration: none;
+  color: #913831;
+  font-weight:600;
+}
+.mobile-menu ul li a:focus, .mobile-menu ul li a:hover{ text-decoration: underline; }
+
+/* Contact page specific link style (email / instagram) */
+.contact-link{ text-decoration:none; color:#913831 }
+.contact-link:focus, .contact-link:hover{ text-decoration:underline }
 
 /* layout helper to keep footer at bottom */
 .app-root{min-height:100vh; display:flex; flex-direction:column}
