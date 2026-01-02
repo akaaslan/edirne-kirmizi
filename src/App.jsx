@@ -14,6 +14,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
+import AdminPanel from "./pages/AdminPanel";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -28,6 +30,8 @@ function AnimatedRoutes() {
         <Route path="/hakkimizda" element={<About />} />
         <Route path="/iletisim" element={<Contact />} />
         <Route path="/gizlilik" element={<Privacy />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/panel" element={<AdminPanel />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>

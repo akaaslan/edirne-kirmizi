@@ -19,44 +19,152 @@ import p21 from "../assets/urunler/foti21.jpg";
 import p22 from "../assets/urunler/foti22.jpg";
 import p23 from "../assets/urunler/foti23.jpg";
 
-const imgs = [p1,p5,p7,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23];
-
-// mapping of product id -> Trendyol URL (provided)
-const urunLinkleri = {
-  1: { id: 16, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  2: { id: 17, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  3: { id: 18, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  4: { id: 19, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  5: { id: 20, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  6: { id: 21, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  7: { id: 22, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  8: { id: 23, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  9: { id: 16, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  10: { id: 17, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  11: { id: 18, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  12: { id: 19, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  13: { id: 20, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  14: { id: 21, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  15: { id: 22, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  16: { id: 16, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  17: { id: 17, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  18: { id: 18, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  19: { id: 19, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  20: { id: 20, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  21: { id: 21, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  22: { id: 22, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-  23: { id: 23, url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0' },
-};
-
-const products = imgs.map((img, i) => {
-  const num = i + 1;
-  return {
-    id: `urun-${num}`,
-    title: `Ürün ${num}`,
-    price: `₺${(120 + (num-1) * 15)}`,
-    img,
-    url: (urunLinkleri[num] && urunLinkleri[num].url) ? urunLinkleri[num].url : 'https://www.trendyol.com/'
-  };
-});
+// Her ürün için özel bilgiler - title, description, price ve Trendyol URL'lerini buradan yönet
+const products = [
+  {
+    id: 'urun-1',
+    title: 'Edirne Kırmızısı Fular', // Ürün adını buraya yaz
+    description: 'El yapımı, doğal boyalarla boyanmış premium fular. Yumuşak dokusu ve zamansız tasarımı ile her kombinle uyumlu.', // Ürün açıklaması
+    price: '₺750', // Ürün fiyatı
+    img: p1,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-2',
+    title: 'İpek Şal',
+    description: 'Geleneksel motiflerle süslenmiş ipek şal. Özel günler ve günlük kullanım için ideal.',
+    price: 'Stokta Yok',
+    img: p5,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-3',
+    title: 'Baskılı Saten Saç Tokası',
+    description: 'Klasik kare kesim fular. Farklı bağlama teknikleriyle çok yönlü kullanım.',
+    price: '₺200',
+    img: p7,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-4',
+    title: 'Baskılı Fiyonk Toka',
+    description: 'Sıcak tutan, şık görünüm sağlayan uzun boy fular.',
+    price: '₺249',
+    img: p9,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-5',
+    title: 'Eşarp',
+    description: 'Günlük kullanım için pratik ve şık bandana. Çeşitli renk seçenekleri.',
+    price: 'Stokta Yok',
+    img: p10,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-6',
+    title: 'Fular',
+    description: 'Lüks dokuma tekniği ile üretilmiş premium eşarp. Özel günler için.',
+    price: 'Stokta Yok',
+    img: p11,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-7',
+    title: 'Desenli Eşarp',
+    description: 'Geleneksel Türk motifleriyle süslenmiş özel tasarım fular.',
+    price: 'Stokta Yok',
+    img: p12,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-8',
+    title: 'Eşarp',
+    description: 'Parlak saten kumaştan üretilmiş zarif şal. Akşam kombinleri için mükemmel.',
+    price: 'Stokta Yok',
+    img: p13,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-9',
+    title: 'Eşarp',
+    description: 'Kalın dokulu, sıcak tutan kışlık fular. Soğuk havalarda stil ve konfor.',
+    price: 'Stokta Yok',
+    img: p14,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-10',
+    title: 'Fular',
+    description: 'Kompakt boyutu ile çanta askısı veya saç bandı olarak kullanılabilir.',
+    price: 'Stokta Yok',
+    img: p15,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-11',
+    title: 'Muradiye Eşarp',
+    description: 'Hafif ve havadar dokuma. Yaz ayları için ideal.',
+    price: '₺800',
+    img: p16,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-12',
+    title: 'Muradiye Eşarp',
+    description: 'Zamansız tasarımı ile her dolaba uyum sağlayan klasik eşarp.',
+    price: '₺800',
+    img: p17,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-13',
+    title: 'Eşarp',
+    description: 'El işi çiçek desenleriyle bezeli özel tasarım şal.',
+    price: 'Stokta Yok',
+    img: p18,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-14',
+    title: 'Eşarp',
+    description: 'Spor ve günlük aktiviteler için tasarlanmış pratik bandana.',
+    price: 'Stokta Yok',
+    img: p19,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-15',
+    title: 'Mavi Çinili Eşarp',
+    description: 'Modern geometrik desenlerle dekore edilmiş çağdaş fular.',
+    price: 'Stokta Yok',
+    img: p20,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-16',
+    title: 'Eşarp',
+    description: 'Nostaljik tasarımı ile dikkat çeken vintage tarzı şal.',
+    price: 'Stokta Yok',
+    img: p21,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-17',
+    title: 'Mavi Çinili Fular',
+    description: 'El işlemeli detaylarla zenginleştirilmiş özel koleksiyon fular.',
+    price: '₺750',
+    img: p22,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  },
+  {
+    id: 'urun-18',
+    title: 'Klasik Desen Fular',
+    description: 'Günlük şıklık için tasarlanmış rahat kullanımlı eşarp.',
+    price: '₺750',
+    img: p23,
+    url: 'https://www.trendyol.com/magaza/edirne-kirmizisi-m-941682?channelId=1&sst=0'
+  }
+];
 
 export default products;

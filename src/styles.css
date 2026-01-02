@@ -120,6 +120,12 @@ body{
   color:var(--edirne);
 }
 .hero p{color:var(--muted); margin-bottom:1.2rem; max-width:720px; font-size:1.05rem}
+.hero-sub{ text-align:center}
+
+@media (min-width:900px){
+  /* on desktop, nudge the hero paragraph to the right */
+  .hero-sub{ text-align:left; margin-left:18%; max-width:720px }
+}
 
 /* sections */
 .section {
@@ -145,19 +151,191 @@ body{
   padding:1.5rem;
   border-radius:12px;
   box-shadow:0 8px 28px rgba(0,0,0,0.06);
-  transition:transform 220ms ease, box-shadow 220ms ease;
+  transition: box-shadow 220ms ease;
+  cursor: pointer;
 }
-.card:hover{transform:translateY(-6px); box-shadow:0 14px 40px rgba(0,0,0,0.08)}
+.card:hover{ box-shadow:0 14px 40px rgba(0,0,0,0.08) }
 .card h3{margin:0 0 0.5rem 0; font-family: var(--font-sans); color:var(--edirne); font-size:1.15rem}
 .card p{margin:0; color:var(--muted)}
 
+/* products controls */
+.products-controls .grid-btn{
+  border: 1.5px solid rgba(156, 30, 36, 0.2);
+  background: linear-gradient(135deg, rgba(250, 248, 243, 0.9) 0%, rgba(231, 216, 201, 0.3) 100%);
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+.products-controls .grid-btn:hover{
+  border-color: rgba(156, 30, 36, 0.4);
+  background: linear-gradient(135deg, rgba(250, 248, 243, 1) 0%, rgba(231, 216, 201, 0.5) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(156, 30, 36, 0.1);
+}
+.products-controls .grid-btn.active{
+  border-color: var(--edirne);
+  background: linear-gradient(135deg, var(--edirne) 0%, rgba(156, 30, 36, 0.85) 100%);
+  color: var(--ivory);
+  box-shadow: 0 4px 16px rgba(156, 30, 36, 0.25);
+}
+.products-controls .grid-btn.active:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(156, 30, 36, 0.3);
+}
+
+.products-controls .sort-select{
+  border: 1.5px solid rgba(156, 30, 36, 0.2);
+  background: linear-gradient(135deg, rgba(250, 248, 243, 0.9) 0%, rgba(231, 216, 201, 0.3) 100%);
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239C1E24' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+}
+.products-controls .sort-select:hover{
+  border-color: rgba(156, 30, 36, 0.4);
+  background: linear-gradient(135deg, rgba(250, 248, 243, 1) 0%, rgba(231, 216, 201, 0.5) 100%);
+  box-shadow: 0 4px 12px rgba(156, 30, 36, 0.1);
+}
+.products-controls .sort-select:focus{
+  outline: none;
+  border-color: var(--edirne);
+  box-shadow: 0 0 0 3px rgba(156, 30, 36, 0.1);
+}
+
 /* products grid */
 .products-grid{grid-template-columns: repeat(3, 1fr);}
-.product-card{display:flex; gap:1rem; align-items:center}
-.product-media img{width:120px; height:120px; object-fit:cover; border-radius:10px}
-.product-card{transition: transform 160ms ease, box-shadow 160ms ease}
-.product-card:hover{transform: translateY(-6px); box-shadow:0 18px 48px rgba(0,0,0,0.12)}
-.product-body{flex:1}
+.products-grid.grid-2{grid-template-columns: repeat(2, 1fr);}
+.products-grid.grid-3{grid-template-columns: repeat(3, 1fr);}
+.products-grid.grid-4{grid-template-columns: repeat(4, 1fr);}
+
+.product-card{
+  display:flex; 
+  gap:1.25rem; 
+  align-items:center;
+  border: 1px solid rgba(156, 30, 36, 0.08);
+  background: linear-gradient(135deg, rgba(250, 248, 243, 0.95) 0%, rgba(231, 216, 201, 0.15) 100%);
+  position: relative;
+  overflow: hidden;
+}
+/* Grid-4 uses column layout to prevent text overflow */
+.products-grid.grid-4 .product-card{
+  flex-direction: column;
+  align-items: flex-start;
+}
+.products-grid.grid-4 .product-card .product-media{
+  align-self: center;
+}
+.product-card::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(156, 30, 36, 0.02) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 280ms ease;
+  pointer-events: none;
+}
+.product-card:hover::before{
+  opacity: 1;
+}
+/* Out of stock styling */
+.product-card.out-of-stock{
+  opacity: 0.75;
+  border-color: rgba(156, 30, 36, 0.15);
+  background: linear-gradient(135deg, rgba(250, 248, 243, 0.7) 0%, rgba(231, 216, 201, 0.1) 100%);
+}
+.product-card.out-of-stock:hover{
+  opacity: 0.85;
+  transform: translateY(-4px) scale(1.005);
+}
+.product-media{ 
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  position: relative;
+  flex-shrink: 0;
+}
+.product-media::after{
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(156, 30, 36, 0.08) 0%, rgba(231, 216, 201, 0.12) 100%);
+  opacity: 0;
+  transition: opacity 280ms ease;
+  pointer-events: none;
+  z-index: -1;
+}
+.product-card:hover .product-media::after{
+  opacity: 1;
+}
+.product-media img{
+  width:140px; 
+  height:140px; 
+  object-fit:cover; 
+  border-radius:12px;
+  box-shadow: 0 4px 12px rgba(156, 30, 36, 0.08);
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.product-card{
+  transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 220ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 220ms ease;
+}
+.product-card:hover{
+  transform: translateY(-8px) scale(1.01); 
+  box-shadow: 0 20px 60px rgba(156, 30, 36, 0.12), 0 0 0 1px rgba(156, 30, 36, 0.05);
+  border-color: rgba(156, 30, 36, 0.15);
+}
+.product-card:hover .product-media img{
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(156, 30, 36, 0.18);
+}
+.product-body{
+  flex:1;
+  display:flex; 
+  flex-direction:column;
+  padding: 0.25rem 0;
+}
+.product-body h3{
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--dark);
+  letter-spacing: -0.01em;
+}
+.product-body p{
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--edirne);
+  margin: 0;
+}
+/* ensure actions sit at the bottom of the card */
+.product-actions{ 
+  margin-top:auto; 
+  display:flex; 
+  gap:8px;
+  padding-top: 0.75rem;
+}
+.product-actions a, .product-actions button{ text-decoration:none }
+.product-actions .primary.large{ 
+  text-decoration:none;
+  font-size: 0.95rem;
+  padding: 0.55rem 1.1rem;
+  font-weight: 600;
+}
 
 /* Story gallery: alternating image left/right */
 .story-pair{display:flex; gap:2rem; align-items:center; margin:1.5rem 0}
@@ -167,9 +345,13 @@ body{
 .story-media img{width:100%; height:100%; object-fit:cover; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.08)}
 
 @media (max-width:900px){
-  .products-grid{grid-template-columns:repeat(2,1fr)}
+  .products-grid.grid-2{grid-template-columns:repeat(2,1fr)}
+  .products-grid.grid-3{grid-template-columns:repeat(2,1fr)}
+  .products-grid.grid-4{grid-template-columns:repeat(3,1fr)}
   .product-card{flex-direction:column; align-items:flex-start}
-  .product-media img{width:100%; height:220px}
+  /* keep product thumbnails uniform on smaller screens as well */
+  .product-media img{width:140px; height:140px; margin:auto}
+  .product-card .product-media{align-self:center}
   .story-pair{flex-direction:column}
   .story-pair:nth-child(even){flex-direction:column}
   .story-pair .story-media{max-width:100%}
@@ -177,7 +359,20 @@ body{
 
 @media (max-width:640px){
   .primary.large{ width:90%; display:block; text-align:center }
-  .products-grid{grid-template-columns:1fr}
+  /* show two columns on small screens as requested */
+  .products-grid.grid-2{grid-template-columns:repeat(2, 1fr)}
+  .products-grid.grid-3{grid-template-columns:repeat(2, 1fr)}
+  .products-grid.grid-4{grid-template-columns:repeat(2, 1fr)}
+}
+
+/* make product card action buttons smaller on mobile so they fit two-column layout */
+@media (max-width:640px){
+  .product-actions .primary.large{
+    width: auto !important;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.95rem;
+    display: inline-block;
+  }
 }
 
 /* active page indicator */
@@ -279,6 +474,67 @@ button.primary:active{transform:translateY(1px)}
 /* Contact page specific link style (email / instagram) */
 .contact-link{ text-decoration:none; color:#913831 }
 .contact-link:focus, .contact-link:hover{ text-decoration:underline }
+
+/* Contact page cards */
+.contact-card {
+  background: linear-gradient(135deg, rgba(250, 248, 243, 0.95) 0%, rgba(231, 216, 201, 0.2) 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(156, 30, 36, 0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.contact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(156, 30, 36, 0.12);
+  border-color: rgba(156, 30, 36, 0.15);
+}
+
+/* Contact form inputs */
+.contact-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1.5px solid rgba(156, 30, 36, 0.15);
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  background: rgba(250, 248, 243, 0.5);
+  transition: all 180ms ease;
+}
+.contact-input:focus {
+  outline: none;
+  border-color: var(--edirne);
+  box-shadow: 0 0 0 3px rgba(156, 30, 36, 0.08);
+  background: #fff;
+}
+.contact-input::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+/* About page cards */
+.about-card {
+  background: linear-gradient(135deg, rgba(250, 248, 243, 0.9) 0%, rgba(231, 216, 201, 0.2) 100%);
+  padding: 2.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(156, 30, 36, 0.08);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+}
+
+/* Value cards */
+.value-card {
+  background: linear-gradient(135deg, rgba(250, 248, 243, 0.95) 0%, rgba(231, 216, 201, 0.25) 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(156, 30, 36, 0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  transition: all 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+.value-card:hover {
+  border-color: rgba(156, 30, 36, 0.15);
+  box-shadow: 0 16px 48px rgba(156, 30, 36, 0.12);
+}
 
 /* layout helper to keep footer at bottom */
 .app-root{min-height:100vh; display:flex; flex-direction:column}
