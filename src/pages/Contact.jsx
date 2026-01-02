@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
@@ -148,8 +149,8 @@ export default function Contact(){
                   </div>
                   <div>
                     <h4 style={{margin: 0, color: 'var(--edirne)', fontSize: '1.2rem'}}>Instagram</h4>
-                    <a href="https://instagram.com/edirnekirmizi" target="_blank" rel="noreferrer" className="contact-link" style={{fontSize: '1rem'}}>
-                      @edirnekirmizi
+                    <a href="https://www.instagram.com/edirnekirmizisi.store" target="_blank" rel="noreferrer" className="contact-link" style={{fontSize: '1rem'}}>
+                      @edirnekirmizisi.store
                     </a>
                   </div>
                 </div>

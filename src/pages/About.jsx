@@ -2,6 +2,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 export default function About(){
   const container = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
@@ -202,14 +203,14 @@ export default function About(){
             Zamanın ötesinde bir zarafet mümkün — ve biz onu Edirne'den ilhamla yeniden yaşatıyoruz.
           </p>
           <div style={{display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap'}}>
-            <a href="/urunler" style={{textDecoration: 'none'}}>
+            <Link to="/urunler" style={{textDecoration: 'none'}}>
               <button className="primary large">Koleksiyonu Keşfet</button>
-            </a>
-            <a href="/iletisim" style={{textDecoration: 'none'}}>
+            </Link>
+            <Link to="/iletisim" style={{textDecoration: 'none'}}>
               <button className="primary large" style={{background: 'transparent', color: 'var(--edirne)', border: '2px solid var(--edirne)'}}>
                 İletişime Geç
               </button>
-            </a>
+            </Link>
           </div>
         </motion.div>
       </section>
