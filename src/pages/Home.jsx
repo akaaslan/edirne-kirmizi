@@ -5,6 +5,12 @@ import { motion } from "framer-motion";
 import HeroCarousel from "../components/HeroCarousel";
 import { Link } from "react-router-dom";
 
+// Koleksiyon fotoğrafları - src/assets/homescreengaleri/ klasörüne fotoğraflarınızı ekleyin
+import esarpImg from "../assets/homescreengaleri/esarp.PNG";
+// import bandanaImg from "../assets/homescreengaleri/bandana.jpg";
+// import renkImg from "../assets/homescreengaleri/renk.jpg";
+import kurumsalImg from "../assets/homescreengaleri/kurumsal.JPG";
+
 export default function Home(){
   return (
     <>
@@ -65,21 +71,55 @@ export default function Home(){
             <div className="grid" style={{marginTop:"1rem"}}>
               {[{
                 title: 'Eşarp & Fular',
-                desc: 'Yumuşak dokular ve zamansız formlar.'
+                desc: 'Yumuşak dokular ve zamansız formlar.',
+                img: esarpImg  // Fotoğraf eklemek için yorumu kaldırın
               },{
                 title: 'Bandana & Tokalar',
-                desc: 'Günlük kullanıma uygun, yerel işçilik.'
+                desc: 'Günlük kullanıma uygun, yerel işçilik.',
+                // img: bandanaImg
               },{
                 title: 'Renk Örnekleri',
-                desc: 'Pigment örnekleri ve bakım önerileri.'
+                desc: 'Pigment örnekleri ve bakım önerileri.',
+                // img: renkImg
               },{
-                title   : 'Ev Dekorasyonu',
-                desc    : 'Edirne Kırmızısı ile yaşam alanlarınızı renklendirin.'
+                title: 'Kurumsal Hediyelik',
+                desc: 'Edirne Kırmızısı koleksiyonlarımızdan istediğiniz seçeneklerle kurumsal hediyeleriniz özenle hazırlanır.',
+                img: kurumsalImg
               }].map((c, i) => (
                 <Link key={c.title} to="/urunler" style={{textDecoration:'none', color:'inherit'}} aria-label={`${c.title} koleksiyonunu inceleyin`}>
-                  <motion.article initial={{opacity:0, y:8}} animate={{opacity:1, y:0}} whileHover={{ y:-6, scale:1.02 }} transition={{delay:0.08*i, duration:0.45}} className="card">
-                    <h3>{c.title}</h3>
-                    <p>{c.desc}</p>
+                  <motion.article 
+                    initial={{opacity:0, y:8}} 
+                    animate={{opacity:1, y:0}} 
+                    whileHover={{ y:-6, scale:1.02 }} 
+                    transition={{delay:0.08*i, duration:0.45}} 
+                    className="card collection-card"
+                    style={{overflow: 'hidden', padding: 0}}
+                  >
+                    {c.img && (
+                      <div style={{
+                        width: '100%',
+                        height: '200px',
+                        overflow: 'hidden',
+                        borderRadius: '12px 12px 0 0'
+                      }}>
+                        <img 
+                          src={c.img} 
+                          alt={c.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            transition: 'transform 0.3s ease'
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                          onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                        />
+                      </div>
+                    )}
+                    <div style={{padding: '1.5rem'}}>
+                      <h3>{c.title}</h3>
+                      <p>{c.desc}</p>
+                    </div>
                   </motion.article>
                 </Link>
               ))}

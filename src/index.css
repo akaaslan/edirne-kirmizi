@@ -184,6 +184,11 @@ button.primary:active{
   box-shadow: 0 4px 12px rgba(156,30,36,0.14);
 }
 
+/* Product card carousel navigation buttons */
+.product-card:hover .carousel-nav-btn {
+  opacity: 1;
+}
+
 /* responsive */
 @media (max-width:900px){
   .grid{grid-template-columns:repeat(2,1fr)}

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 import products from "../data/products";
+import ProductCardCarousel from "../components/ProductCardCarousel";
 
 export default function Products(){
   console.log("PRODUCTS COMPONENT RENDERING");
@@ -184,7 +185,7 @@ export default function Products(){
               <Link key={p.id} to={`/urunler/${p.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
                 <motion.article className={`card product-card ${isOutOfStock ? 'out-of-stock' : ''}`} variants={itemVariants} exit="exit" layout>
                   <div className="product-media">
-                    <img src={p.img} alt={p.title} style={isOutOfStock ? {opacity: 0.5} : {}} />
+                    <ProductCardCarousel images={p.images || [p.img]} alt={p.title} isOutOfStock={isOutOfStock} />
                   </div>
                     <div className="product-body">
                     <h3 style={isOutOfStock ? {opacity: 0.6} : {}}>{p.title}</h3>

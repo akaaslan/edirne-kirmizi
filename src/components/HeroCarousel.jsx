@@ -9,7 +9,7 @@ import g4 from '../assets/galeri/foti4.jpg';
 import g5 from '../assets/galeri/foti6.jpg';
 import g6 from '../assets/galeri/foti8.jpg';
 
-const images = [g1,g2,g3,g4,g5,g6];
+const images = [g1,g2,g3,g4,g6];
 
 export default function HeroCarousel({ interval = 4000 }){
   const [index, setIndex] = useState(0);
