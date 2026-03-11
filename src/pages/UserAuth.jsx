@@ -45,12 +45,25 @@ export default function UserAuth() {
         localStorage.setItem('userPhone', response.phone || '');
         localStorage.setItem('userFullName', response.fullName || '');
         localStorage.setItem('userRole', response.role);
-        localStorage.setItem('tokenTimestamp', Date.now().toString()); // Token alındığı zaman
+        localStorage.setItem('tokenTimestamp', Date.now().toString());
+        
+        // If user is admin, also set admin tokens so admin panel works
+        if (response.role === 'ADMIN') {
+          localStorage.setItem('authToken', response.token);
+          localStorage.setItem('adminAuth', 'true');
+          localStorage.setItem('adminUsername', response.username);
+          localStorage.setItem('adminRole', response.role);
+        }
         
         // Trigger custom event to update navbar
         window.dispatchEvent(new Event('authChange'));
         
-        navigate('/hesabim');
+        // Redirect admin to admin panel, regular users to account
+        if (response.role === 'ADMIN') {
+          navigate('/admin/panel', { replace: true });
+        } else {
+          navigate('/hesabim');
+        }
       } else {
         // Register
         await api.register({

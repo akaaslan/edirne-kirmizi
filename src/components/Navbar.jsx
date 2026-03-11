@@ -10,6 +10,7 @@ export default function Navbar(){
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
 
@@ -26,8 +27,10 @@ export default function Navbar(){
     const checkAuth = () => {
       const token = localStorage.getItem('userToken');
       const name = localStorage.getItem('userName');
+      const role = localStorage.getItem('userRole');
       setIsLoggedIn(!!token);
       setUserName(name || '');
+      setIsAdmin(role === 'ADMIN');
     };
     
     // Check on mount
@@ -54,8 +57,14 @@ export default function Navbar(){
     localStorage.removeItem('userPhone');
     localStorage.removeItem('userFullName');
     localStorage.removeItem('userRole');
+    // Also clear admin tokens
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('adminAuth');
+    localStorage.removeItem('adminUsername');
+    localStorage.removeItem('adminRole');
     setIsLoggedIn(false);
     setUserName('');
+    setIsAdmin(false);
     setShowDropdown(false);
     
     // Trigger custom event
@@ -156,6 +165,28 @@ export default function Navbar(){
                           <span>Kargo Takibi</span>
                         </Link> */}
                         
+                        {isAdmin && (
+                          <Link 
+                            to="/admin/panel" 
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.75rem',
+                              padding: '0.875rem 1.25rem',
+                              color: 'var(--edirne)',
+                              textDecoration: 'none',
+                              transition: 'all 0.2s',
+                              fontWeight: 600,
+                              borderBottom: '1px solid rgba(156, 30, 36, 0.05)'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.background = 'rgba(156, 30, 36, 0.05)'}
+                            onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                          >
+                            <MdPerson size={18} />
+                            <span>Admin Panel</span>
+                          </Link>
+                        )}
+                        
                         <Link 
                           to="/destek" 
                           style={{
@@ -243,6 +274,7 @@ export default function Navbar(){
                       {/* ORDERS & SHIPPING DISABLED */}
                       {/* <li><Link to="/siparislerim"><MdShoppingBag size={18} />Siparişler</Link></li> */}
                       {/* <li><Link to="/kargo-takibi"><MdLocalShipping size={18} />Kargo Takibi</Link></li> */}
+                      {isAdmin && <li><Link to="/admin/panel" style={{color: 'var(--edirne)', fontWeight: 600}}><MdPerson size={18} style={{verticalAlign: 'middle', marginRight: '0.5rem'}} />Admin Panel</Link></li>}
                       <li><Link to="/destek"><MdSupport size={18} style={{verticalAlign: 'middle', marginRight: '0.5rem'}} />Destek</Link></li>
                       <li>
                         <button 
