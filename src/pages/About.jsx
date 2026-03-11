@@ -34,7 +34,10 @@ export default function About(){
 
   return (
     <>
-      <Helmet><title>Hakkımızda | Edirne Kırmızısı</title></Helmet>
+      <Helmet>
+        <title>Hakkımızda | Edirne Kırmızısı</title>
+        <meta name="description" content="Edirne Kırmızısı hakkında. Osmanlı'dan günümüze uzanan geleneksel Türk dokuma sanatının modern yorumunu keşfedin." />
+      </Helmet>
       
       {/* Hero Section */}
       <section style={{

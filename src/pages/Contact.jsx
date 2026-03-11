@@ -2,17 +2,29 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
+import { api } from "../services/api";
 
 export default function Contact(){
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Form submission logic will be added later with backend
-    setStatus('Mesajınız alındı! En kısa sürede dönüş yapacağız.');
-    setTimeout(() => setStatus(''), 5000);
-    setFormData({ name: '', email: '', message: '' });
+    setLoading(true);
+    setStatus('');
+    
+    try {
+      await api.sendContactMessage(formData.name, formData.email, formData.message);
+      setStatus('Mesajınız başarıyla gönderildi! En kısa sürede dönüş yapacağız. ✅');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      setStatus('Bir hata oluştu. Lütfen tekrar deneyin. ❌');
+      console.error('Contact form error:', error);
+    } finally {
+      setLoading(false);
+      setTimeout(() => setStatus(''), 5000);
+    }
   };
 
   const handleChange = (e) => {
@@ -24,7 +36,10 @@ export default function Contact(){
 
   return (
     <>
-      <Helmet><title>İletişim | Edirne Kırmızısı</title></Helmet>
+      <Helmet>
+        <title>İletişim | Edirne Kırmızısı</title>
+        <meta name="description" content="Edirne Kırmızısı ile iletişime geçin. Sorularınız, önerileriniz ve sipariş talepleriniz için bize ulaşın." />
+      </Helmet>
       <section className="section" style={{background: "linear-gradient(180deg, rgba(250, 248, 243, 0.3) 0%, transparent 100%)"}}>
         <motion.div className="container" initial="hidden" animate="visible" variants={container}>
           <motion.div variants={item} style={{textAlign: 'center', marginBottom: '3rem'}}>
@@ -79,8 +94,13 @@ export default function Contact(){
                       placeholder="Mesajınızı buraya yazın..."
                     />
                   </div>
-                  <button type="submit" className="primary large" style={{width: '100%', marginTop: '0.5rem'}}>
-                    Gönder
+                  <button 
+                    type="submit" 
+                    className="primary large" 
+                    style={{width: '100%', marginTop: '0.5rem'}}
+                    disabled={loading}
+                  >
+                    {loading ? 'Gönderiliyor...' : 'Gönder'}
                   </button>
                   {status && (
                     <motion.p 

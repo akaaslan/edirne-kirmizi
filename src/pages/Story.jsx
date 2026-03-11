@@ -22,7 +22,10 @@ const images = [g1,g2,g3,g4,g5];
 export default function Story(){
   return (
     <>
-      <Helmet><title>Hikâye | Edirne Kırmızısı</title></Helmet>
+      <Helmet>
+        <title>Hikâye | Edirne Kırmızısı</title>
+        <meta name="description" content="Edirne Kırmızısı'nın marka hikâyesi. Geleneksel el sanatlarını modern dünyayla buluşturan yolculuğumuzu keşfedin." />
+      </Helmet>
       <motion.section className="section" initial={{opacity:0}} animate={{opacity:1}}>
         <div className="container reveal">
           <h2 style={{fontFamily:"var(--font-serif)", color:"var(--edirne)"}}>Marka Hikâyemiz</h2>

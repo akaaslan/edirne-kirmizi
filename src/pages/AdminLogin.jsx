@@ -1,23 +1,52 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { api } from "../services/api";
 
 export default function AdminLogin() {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Admin şifresi - .env dosyasından alınıyor
-  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const response = await api.login({ username, password });
+      
+      // Check if we received a token
+      if (!response || !response.token) {
+        setError("Giriş yanıtında token bulunamadı!");
+        return;
+      }
+      
+      // Verify user has ADMIN role
+      if (response.role !== 'ADMIN') {
+        setError("Bu hesap admin yetkisine sahip değil.");
+        return;
+      }
+
+      // Save token and user info
+      localStorage.setItem("authToken", response.token);
       localStorage.setItem("adminAuth", "true");
-      navigate("/admin/panel");
-    } else {
-      setError("Yanlış şifre!");
+      localStorage.setItem("adminUsername", response.username || username);
+      localStorage.setItem("adminRole", response.role);
+      localStorage.setItem("tokenTimestamp", Date.now().toString());
+      
+      // Small delay to ensure localStorage is written
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Use replace to avoid back button issues
+      navigate("/admin/panel", { replace: true });
+    } catch (error) {
+      setError(error.message || "Giriş başarısız! Kullanıcı adı veya şifre hatalı.");
       setPassword("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,13 +81,38 @@ export default function AdminLogin() {
                   fontWeight: 600,
                   color: 'var(--dark)'
                 }}>
+                  Kullanıcı Adı
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Kullanıcı adınızı girin"
+                  style={{
+                    width: '100%',
+                    padding: '0.85rem',
+                    border: '1px solid rgba(156, 30, 36, 0.2)',
+                    borderRadius: '10px',
+                    fontSize: '1rem',
+                    background: '#fff',
+                    marginBottom: '1rem'
+                  }}
+                  required
+                  autoFocus
+                />
+                <label style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  fontWeight: 600,
+                  color: 'var(--dark)'
+                }}>
                   Şifre
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Admin şifresini girin"
+                  placeholder="Şifrenizi girin"
                   style={{
                     width: '100%',
                     padding: '0.85rem',
@@ -67,7 +121,7 @@ export default function AdminLogin() {
                     fontSize: '1rem',
                     background: '#fff'
                   }}
-                  autoFocus
+                  required
                 />
               </div>
 
@@ -87,8 +141,9 @@ export default function AdminLogin() {
                 type="submit"
                 className="primary"
                 style={{ width: '100%', fontSize: '1.05rem' }}
+                disabled={loading}
               >
-                Giriş Yap
+                {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
               </button>
             </form>
           </div>

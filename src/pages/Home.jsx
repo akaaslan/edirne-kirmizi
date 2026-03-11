@@ -3,6 +3,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import HeroCarousel from "../components/HeroCarousel";
+import ProductRecommendations from "../components/ProductRecommendations";
 import { Link } from "react-router-dom";
 
 // Koleksiyon fotoğrafları - src/assets/homescreengaleri/ klasörüne fotoğraflarınızı ekleyin
@@ -126,6 +127,11 @@ export default function Home(){
             </div>
           </div>
         </section>
+
+        <div className="container">
+          <ProductRecommendations type="trending" limit={4} />
+          <ProductRecommendations type="new-arrivals" limit={4} />
+        </div>
 
         <section className="section" style={{background:"linear-gradient(180deg, rgba(0,0,0,0.02), transparent)"}} aria-labelledby="why-heading">
           <div className="container reveal">

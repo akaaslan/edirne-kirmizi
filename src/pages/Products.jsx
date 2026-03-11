@@ -3,12 +3,39 @@ import React, { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-
-import products from "../data/products";
-import ProductCardCarousel from "../components/ProductCardCarousel";
+import { api } from "../services/api";
 
 export default function Products(){
-  console.log("PRODUCTS COMPONENT RENDERING");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [categories, setCategories] = useState([]);
+  
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const productsData = await api.getAllProducts();
+        setProducts(productsData);
+        setLoading(false);
+        
+        // Extract unique categories
+        const cats = [...new Set(productsData.map(p => p.category).filter(Boolean))];
+        setCategories(cats.sort());
+      } catch (err) {
+        setError('Ürünler yüklenirken bir hata oluştu');
+        setLoading(false);
+        console.error('Error fetching products:', err);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  // Filter by category
+  const filteredProducts = selectedCategory === 'all' ? products : products.filter(p => p.category === selectedCategory);
+  
   // Restore page from localStorage
   const [page, setPage] = useState(() => {
     const saved = localStorage.getItem('productsPage');
@@ -59,9 +86,9 @@ export default function Products(){
   }, [page, pages, gridSize]);
 
   // Sort products based on selected option, with out-of-stock items always at the end
-  const sortedProducts = [...products].sort((a, b) => {
-    const aOutOfStock = a.price.toLowerCase().includes('stokta yok');
-    const bOutOfStock = b.price.toLowerCase().includes('stokta yok');
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const aOutOfStock = !a.inStock || a.stockCount === 0;
+    const bOutOfStock = !b.inStock || b.stockCount === 0;
     
     // Always push out-of-stock items to the end
     if (aOutOfStock && !bOutOfStock) return 1;
@@ -93,9 +120,42 @@ export default function Products(){
   const container = { hidden: {opacity:0}, show: {opacity:1, transition:{staggerChildren:0.06}} };
   const itemVariants = { hidden:{opacity:0, y:8}, show:{opacity:1, y:0}, exit:{opacity:0, y:6} };
 
+  if (loading) {
+    return (
+      <>
+        <Helmet><title>Ürünler | Edirne Kırmızısı</title></Helmet>
+        <section className="section">
+          <div className="container">
+            <div style={{textAlign: 'center', padding: '4rem 0'}}>
+              <p style={{fontSize: '1.2rem', color: 'var(--muted)'}}>Ürünler yükleniyor...</p>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Helmet><title>Ürünler | Edirne Kırmızısı</title></Helmet>
+        <section className="section">
+          <div className="container">
+            <div style={{textAlign: 'center', padding: '4rem 0'}}>
+              <p style={{fontSize: '1.2rem', color: 'var(--edirne)'}}>{error}</p>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
   return (
     <>
-      <Helmet><title>Ürünler | Edirne Kırmızısı</title></Helmet>
+      <Helmet>
+        <title>Ürünler | Edirne Kırmızısı</title>
+        <meta name="description" content="Edirne Kırmızısı geleneksel el sanatları ürünleri. Fular, şal, aksesuar ve daha fazlası. Özgün tasarım, yerel üretim." />
+      </Helmet>
       <section className="section">
         <div className="container reveal">
           <h2 style={{
@@ -119,6 +179,52 @@ export default function Products(){
 
           {/* Controls for grid size and sorting */}
           <div className="products-controls" style={{marginTop: "1.5rem", marginBottom: "1rem"}}>
+            {/* Category Filter */}
+            {categories.length > 0 && (
+              <div style={{marginBottom: "1rem"}}>
+                <label style={{display: "block", marginBottom: "0.5rem", fontWeight: 600, color: "var(--dark)"}}>
+                  Kategori:
+                </label>
+                <div style={{display: "flex", flexWrap: "wrap", gap: "0.5rem"}}>
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    style={{
+                      padding: "0.5rem 1rem",
+                      border: selectedCategory === 'all' ? "2px solid var(--edirne)" : "1px solid rgba(156, 30, 36, 0.2)",
+                      borderRadius: "8px",
+                      background: selectedCategory === 'all' ? "var(--edirne)" : "#fff",
+                      color: selectedCategory === 'all' ? "#fff" : "var(--dark)",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                      fontWeight: selectedCategory === 'all' ? 600 : 400,
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    Tümü ({products.length})
+                  </button>
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      style={{
+                        padding: "0.5rem 1rem",
+                        border: selectedCategory === cat ? "2px solid var(--edirne)" : "1px solid rgba(156, 30, 36, 0.2)",
+                        borderRadius: "8px",
+                        background: selectedCategory === cat ? "var(--edirne)" : "#fff",
+                        color: selectedCategory === cat ? "#fff" : "var(--dark)",
+                        cursor: "pointer",
+                        fontSize: "0.9rem",
+                        fontWeight: selectedCategory === cat ? 600 : 400,
+                        transition: "all 0.2s ease"
+                      }}
+                    >
+                      {cat} ({products.filter(p => p.category === cat).length})
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div style={{display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center", justifyContent: "space-between"}}>
               {/* Grid Size Controls */}
               <div style={{display: "flex", gap: "0.5rem", alignItems: "center"}}>
@@ -180,22 +286,45 @@ export default function Products(){
           <motion.div key={`${page}-${gridSize}-${sortBy}`} className={`grid products-grid grid-${gridSize}`} style={{marginTop:"1rem"}} variants={container} initial="hidden" animate="show">
             <AnimatePresence initial={false} mode="popLayout">
             {pageItems.map((p, i) => {
-              const isOutOfStock = p.price.toLowerCase().includes('stokta yok');
+              const isOutOfStock = !p.inStock || p.stockCount === 0;
+              const displayImage = p.imageUrl || (p.images && p.images[0]) || p.img;
+              
               return (
-              <Link key={p.id} to={`/urunler/${p.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
-                <motion.article className={`card product-card ${isOutOfStock ? 'out-of-stock' : ''}`} variants={itemVariants} exit="exit" layout>
+              <motion.article key={p.id} className={`card product-card ${isOutOfStock ? 'out-of-stock' : ''}`} variants={itemVariants} exit="exit" layout>
+                <Link to={`/urunler/${p.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
                   <div className="product-media">
-                    <ProductCardCarousel images={p.images || [p.img]} alt={p.title} isOutOfStock={isOutOfStock} />
+                    <img src={displayImage} alt={p.title} style={isOutOfStock ? {opacity: 0.5, objectFit: 'cover', width: '100%', height: '250px'} : {objectFit: 'cover', width: '100%', height: '250px'}} />
+                    {p.images && p.images.length > 1 && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '8px',
+                        right: '8px',
+                        background: 'rgba(0,0,0,0.7)',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        fontWeight: '600'
+                      }}>
+                        +{p.images.length - 1} fotoğraf
+                      </div>
+                    )}
                   </div>
-                    <div className="product-body">
+                  <div className="product-body">
                     <h3 style={isOutOfStock ? {opacity: 0.6} : {}}>{p.title}</h3>
-                    <p style={isOutOfStock ? {color: "var(--edirne)", fontWeight: 600} : {color:"var(--muted)"}}>{p.price}</p>
-                    <div className="product-actions">
-                      <button className="primary large" style={isOutOfStock ? {opacity: 0.5} : {}}>İncele</button>
-                    </div>
+                    <p style={isOutOfStock ? {color: "var(--edirne)", fontWeight: 600} : {color:"var(--muted)"}}>{isOutOfStock ? 'Stokta Yok' : p.price}</p>
                   </div>
-                </motion.article>
-              </Link>
+                </Link>
+                {/* ADD TO CART DISABLED */}
+                {/* <div className="product-actions" style={{padding: '0 1rem 1rem'}}>
+                  {!isOutOfStock && (
+                    <button className="primary large">Sepete Ekle</button>
+                  )}
+                  {isOutOfStock && (
+                    <button className="primary large" style={{opacity: 0.5}} disabled>Stokta Yok</button>
+                  )}
+                </div> */}
+              </motion.article>
             )})}
             </AnimatePresence>
           </motion.div>

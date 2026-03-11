@@ -1,9 +1,93 @@
-import React from "react";
+import React, { useState } from "react";
+import { api } from "../services/api";
 
 export default function Footer(){
+  const [email, setEmail] = useState('');
+  const [nlStatus, setNlStatus] = useState(''); // 'success' | 'error' | ''
+  const [nlMsg, setNlMsg] = useState('');
+  const [nlLoading, setNlLoading] = useState(false);
+
+  const handleNewsletter = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setNlLoading(true);
+    setNlStatus('');
+    try {
+      await api.subscribeNewsletter(email.trim());
+      setNlStatus('success');
+      setNlMsg('Bültenimize başarıyla abone oldunuz!');
+      setEmail('');
+    } catch (err) {
+      setNlStatus('error');
+      setNlMsg(err.message || 'Bir hata oluştu, lütfen tekrar deneyin.');
+    } finally {
+      setNlLoading(false);
+    }
+  };
+
   return (
     <footer className="footer" role="contentinfo">
       <div className="container">
+        {/* Newsletter */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.75rem',
+          marginBottom: '1.5rem',
+          paddingBottom: '1.5rem',
+          borderBottom: '1px solid rgba(255,255,255,0.15)'
+        }}>
+          <p style={{ margin: 0, fontWeight: 600, fontSize: '1rem' }}>
+            Yeni ürünlerden haberdar olun
+          </p>
+          <form onSubmit={handleNewsletter} style={{ display: 'flex', gap: '0.5rem', width: '100%', maxWidth: 420 }}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="E-posta adresiniz"
+              required
+              style={{
+                flex: 1,
+                padding: '0.6rem 1rem',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.25)',
+                background: 'rgba(255,255,255,0.1)',
+                color: 'inherit',
+                fontSize: '0.9rem'
+              }}
+            />
+            <button
+              type="submit"
+              disabled={nlLoading}
+              style={{
+                padding: '0.6rem 1.25rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'var(--edirne)',
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                cursor: nlLoading ? 'not-allowed' : 'pointer',
+                opacity: nlLoading ? 0.6 : 1,
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {nlLoading ? '...' : 'Abone Ol'}
+            </button>
+          </form>
+          {nlStatus && (
+            <p style={{
+              margin: 0,
+              fontSize: '0.85rem',
+              color: nlStatus === 'success' ? '#4CAF50' : '#FF5252'
+            }}>
+              {nlMsg}
+            </p>
+          )}
+        </div>
+
         <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap'}}>
           <div>
             <p style={{margin:0}}>© {new Date().getFullYear()} Edirne Kırmızısı — Kültürel mirasa saygı ile.</p>

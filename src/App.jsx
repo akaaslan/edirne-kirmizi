@@ -1,39 +1,73 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-import Home from "./pages/Home";
-import Story from "./pages/Story";
-import Products from "./pages/Products";
-import ProductDetail from "./pages/ProductDetail";
-// Products and Blog pages removed for promo-only site
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Privacy from "./pages/Privacy";
-import NotFound from "./pages/NotFound";
-import AdminLogin from "./pages/AdminLogin";
-import AdminPanel from "./pages/AdminPanel";
+// Lazy-loaded pages for code splitting
+const Home = lazy(() => import("./pages/Home"));
+const Story = lazy(() => import("./pages/Story"));
+const Products = lazy(() => import("./pages/Products"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const AdminPanelNew = lazy(() => import("./pages/AdminPanelNew"));
+const UserAuth = lazy(() => import("./pages/UserAuth"));
+const UserAccount = lazy(() => import("./pages/UserAccount"));
+const Support = lazy(() => import("./pages/Support"));
+const EditProfile = lazy(() => import("./pages/EditProfile"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+
+function PageLoader() {
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '60vh',
+      color: 'var(--edirne, #9C1E24)',
+      fontSize: '1.1rem',
+      fontWeight: 500
+    }}>
+      Yükleniyor...
+    </div>
+  );
+}
 
 function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+      <Suspense fallback={<PageLoader />}>
+        <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
-  <Route path="/hikaye" element={<Story />} />
-  <Route path="/urunler" element={<Products />} />
-  <Route path="/urunler/:id" element={<ProductDetail />} />
-  {/* product and blog routes removed — site is promo-only */}
+        <Route path="/hikaye" element={<Story />} />
+        <Route path="/urunler" element={<Products />} />
+        <Route path="/urunler/:id" element={<ProductDetail />} />
         <Route path="/hakkimizda" element={<About />} />
         <Route path="/iletisim" element={<Contact />} />
         <Route path="/gizlilik" element={<Privacy />} />
+        <Route path="/giris" element={<UserAuth />} />
+        <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
+        <Route path="/sifre-sifirla" element={<ResetPassword />} />
+        <Route path="/hesabim" element={<UserAccount />} />
+        <Route path="/destek" element={<Support />} />
+        <Route path="/profil-duzenle" element={<EditProfile />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/panel" element={<AdminPanel />} />
+        <Route path="/admin/panel" element={
+          <ProtectedRoute>
+            <AdminPanelNew />
+          </ProtectedRoute>
+        } />
         <Route path="*" element={<NotFound />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 }
