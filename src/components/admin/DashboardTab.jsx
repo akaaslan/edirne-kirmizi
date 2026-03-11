@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MdTrendingUp, MdAttachMoney, MdInventory, MdShoppingCart, MdPeople, MdWarning } from 'react-icons/md';
+import { MdAttachMoney, MdInventory, MdShoppingCart, MdPeople, MdWarning } from 'react-icons/md';
 import { api } from '../../services/api';
 
 export default function DashboardTab() {
@@ -11,6 +11,7 @@ export default function DashboardTab() {
     lowStockItems: 0,
     pendingOrders: 0
   });
+  const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,9 +20,10 @@ export default function DashboardTab() {
 
   const fetchStats = async () => {
     try {
-      const [dashboardData, orderStats] = await Promise.all([
+      const [dashboardData, orderStats, orders] = await Promise.all([
         api.getDashboardStats(),
-        api.getOrderStatistics()
+        api.getOrderStatistics(),
+        api.getAllOrders().catch(() => [])
       ]);
       
       setStats({
@@ -30,6 +32,9 @@ export default function DashboardTab() {
         totalRevenue: orderStats.totalRevenue || 0,
         pendingOrders: orderStats.statusCounts?.pending || 0
       });
+      // Take the 5 most recent orders
+      const sorted = Array.isArray(orders) ? orders.sort((a, b) => new Date(b.createdAt || b.orderDate || 0) - new Date(a.createdAt || a.orderDate || 0)).slice(0, 5) : [];
+      setRecentOrders(sorted);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -38,10 +43,10 @@ export default function DashboardTab() {
   };
 
   const statCards = [
-    { label: 'Toplam Ürün', value: stats.totalProducts, icon: MdInventory, color: '#2196F3', change: '+5%' },
-    { label: 'Toplam Sipariş', value: stats.totalOrders, icon: MdShoppingCart, color: '#4CAF50', change: '+12%' },
-    { label: 'Toplam Gelir', value: `₺${stats.totalRevenue.toLocaleString()}`, icon: MdAttachMoney, color: '#FF9800', change: '+18%' },
-    { label: 'Müşteri Sayısı', value: stats.totalCustomers, icon: MdPeople, color: '#9C51B6', change: '+7%' },
+    { label: 'Toplam Ürün', value: stats.totalProducts, icon: MdInventory, color: '#2196F3' },
+    { label: 'Toplam Sipariş', value: stats.totalOrders, icon: MdShoppingCart, color: '#4CAF50' },
+    { label: 'Toplam Gelir', value: `₺${stats.totalRevenue.toLocaleString()}`, icon: MdAttachMoney, color: '#FF9800' },
+    { label: 'Müşteri Sayısı', value: stats.totalCustomers, icon: MdPeople, color: '#9C51B6' },
     { label: 'Düşük Stok', value: stats.lowStockItems, icon: MdWarning, color: '#F44336', alert: true },
     { label: 'Bekleyen Sipariş', value: stats.pendingOrders, icon: MdShoppingCart, color: '#FF5722' }
   ];
@@ -98,15 +103,6 @@ export default function DashboardTab() {
                 }}>
                   <Icon size={28} style={{ color: stat.color }} />
                 </div>
-                {stat.change && (
-                  <span style={{
-                    fontSize: '0.85rem',
-                    color: stat.change.includes('+') ? '#4CAF50' : '#F44336',
-                    fontWeight: 600
-                  }}>
-                    {stat.change}
-                  </span>
-                )}
               </div>
               <div>
                 <p style={{ margin: '0 0 0.5rem 0', color: '#666', fontSize: '0.9rem', fontWeight: 500 }}>
@@ -121,7 +117,7 @@ export default function DashboardTab() {
         })}
       </div>
 
-      {/* Recent Activity */}
+      {/* Recent Orders */}
       <div style={{
         background: 'white',
         padding: '2rem',
@@ -129,14 +125,50 @@ export default function DashboardTab() {
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.06)'
       }}>
         <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.25rem', fontWeight: 600 }}>
-          Son Aktiviteler
+          Son Siparişler
         </h3>
-        <div style={{ color: '#666' }}>
-          <p>• Yeni sipariş: #EK2026-0127 - ₺850</p>
-          <p>• Stok güncellendi: Edirne Kırmızısı Fular</p>
-          <p>• Yeni müşteri kaydı: ahmet@email.com</p>
-          <p>• Sipariş teslim edildi: #EK2026-0125</p>
-        </div>
+        {recentOrders.length > 0 ? (
+          <div style={{ display: 'grid', gap: '0.75rem' }}>
+            {recentOrders.map((order, idx) => (
+              <div key={order.id || idx} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0.75rem 1rem',
+                background: '#f8f9fa',
+                borderRadius: '8px'
+              }}>
+                <div>
+                  <strong style={{ fontSize: '0.95rem' }}>#{order.id || order.orderNumber || '-'}</strong>
+                  <span style={{ marginLeft: '0.75rem', color: '#6c757d', fontSize: '0.9rem' }}>
+                    {order.customerName || order.userName || '-'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <span style={{
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '20px',
+                    fontSize: '0.8rem',
+                    fontWeight: 500,
+                    background: order.status === 'DELIVERED' ? 'rgba(40,167,69,0.1)' :
+                                order.status === 'PENDING' ? 'rgba(255,193,7,0.1)' :
+                                order.status === 'CANCELLED' ? 'rgba(220,53,69,0.1)' : 'rgba(0,123,255,0.1)',
+                    color: order.status === 'DELIVERED' ? '#28a745' :
+                           order.status === 'PENDING' ? '#ffc107' :
+                           order.status === 'CANCELLED' ? '#dc3545' : '#007bff'
+                  }}>
+                    {order.status || '-'}
+                  </span>
+                  <strong style={{ color: 'var(--edirne)' }}>
+                    ₺{(order.totalAmount || order.total || 0).toLocaleString('tr-TR')}
+                  </strong>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p style={{ color: '#6c757d', margin: 0 }}>Henüz sipariş bulunmuyor.</p>
+        )}
       </div>
     </div>
   );

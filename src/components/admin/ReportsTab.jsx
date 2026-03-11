@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MdAttachMoney, MdTrendingUp, MdShoppingCart, MdFileDownload, MdDateRange } from 'react-icons/md';
+import { MdAttachMoney, MdShoppingCart, MdFileDownload, MdDateRange } from 'react-icons/md';
 import { api } from '../../services/api';
 
 export default function ReportsTab() {
@@ -35,19 +35,6 @@ export default function ReportsTab() {
     } catch (err) {
       console.error('Error fetching reports:', err);
       setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const data = await api.getAllProducts();
-      setProducts(data);
-    } catch (err) {
-      console.error('Error fetching products:', err);
     }
   };
 
@@ -229,9 +216,6 @@ export default function ReportsTab() {
               <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--edirne)' }}>
                 ₺{salesData.totalRevenue.toLocaleString('tr-TR')}
               </p>
-              <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: '#28a745' }}>
-                <MdTrendingUp style={{ verticalAlign: 'middle' }} /> +18% bu ay
-              </p>
             </div>
             <div style={{
               width: '60px',
@@ -265,9 +249,6 @@ export default function ReportsTab() {
               <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--dark)' }}>
                 {salesData.totalOrders}
               </p>
-              <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: '#28a745' }}>
-                <MdTrendingUp style={{ verticalAlign: 'middle' }} /> +12% bu ay
-              </p>
             </div>
             <div style={{
               width: '60px',
@@ -300,9 +281,6 @@ export default function ReportsTab() {
               </p>
               <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--dark)' }}>
                 ₺{salesData.averageOrderValue}
-              </p>
-              <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.85rem', color: '#28a745' }}>
-                <MdTrendingUp style={{ verticalAlign: 'middle' }} /> +5% bu ay
               </p>
             </div>
             <div style={{

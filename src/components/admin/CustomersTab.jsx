@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MdPerson, MdEmail, MdPhone, MdShoppingCart, MdBlock, MdCheckCircle } from 'react-icons/md';
+import { MdPerson, MdEmail, MdPhone, MdShoppingCart, MdCheckCircle } from 'react-icons/md';
 import { api } from '../../services/api';
 
 export default function CustomersTab() {
@@ -13,67 +13,38 @@ export default function CustomersTab() {
   const fetchCustomers = async () => {
     try {
       const data = await api.getAllCustomers();
-      setCustomers(data);
+      setCustomers(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching customers:', error);
+      setCustomers([]);
       setLoading(false);
     }
   };
-
-  // Sample customers data as fallback
-  const sampleCustomers = [
-    {
-      id: 1,
-      name: 'Ayşe Yılmaz',
-      email: 'ayse@example.com',
-      phone: '+90 532 123 4567',
-      totalOrders: 5,
-      totalSpent: '₺3,250',
-      joinDate: '2023-06-15',
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'Mehmet Demir',
-      email: 'mehmet@example.com',
-      phone: '+90 533 234 5678',
-      totalOrders: 8,
-      totalSpent: '₺5,800',
-      joinDate: '2023-03-22',
-      status: 'active'
-    },
-    {
-      id: 3,
-      name: 'Zeynep Kaya',
-      email: 'zeynep@example.com',
-      phone: '+90 534 345 6789',
-      totalOrders: 12,
-      totalSpent: '₺8,450',
-      joinDate: '2023-01-10',
-      status: 'active'
-    }
-  ];
-
-  // Use real customers if available, otherwise use sample data
-  const displayCustomers = customers.length > 0 ? customers : sampleCustomers;
 
   const [searchTerm, setSearchTerm] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  const filteredCustomers = displayCustomers.filter(customer =>
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCustomers = customers.filter(customer =>
+    (customer.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (customer.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleToggleStatus = (customerId) => {
-    setCustomers(displayCustomers.map(customer => 
-      customer.id === customerId 
-        ? { ...customer, status: customer.status === 'active' ? 'blocked' : 'active' }
-        : customer
-    ));
-    alert('Müşteri durumu güncellendi!');
+  const handleDeleteCustomer = async (customerId) => {
+    if (!confirm('Bu müşteriyi silmek istediğinizden emin misiniz?')) return;
+    try {
+      const token = localStorage.getItem('authToken');
+      await fetch(`/api/users/${customerId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setCustomers(customers.filter(c => c.id !== customerId));
+      alert('Müşteri silindi!');
+    } catch (err) {
+      console.error('Error deleting customer:', err);
+      alert('Silme işlemi başarısız!');
+    }
   };
 
   if (loading) {
@@ -142,7 +113,7 @@ export default function CustomersTab() {
                 Toplam Müşteri
               </p>
               <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--dark)' }}>
-                {displayCustomers.length}
+                {customers.length}
               </p>
             </div>
             <div style={{
@@ -175,7 +146,7 @@ export default function CustomersTab() {
                 Aktif Müşteri
               </p>
               <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--dark)' }}>
-                {displayCustomers.filter(c => c.status === 'active').length}
+                {customers.filter(c => c.status === 'active').length}
               </p>
             </div>
             <div style={{
@@ -208,7 +179,7 @@ export default function CustomersTab() {
                 Toplam Sipariş
               </p>
               <p style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--dark)' }}>
-                {displayCustomers.reduce((sum, c) => sum + c.totalOrders, 0)}
+                {customers.reduce((sum, c) => sum + (c.totalOrders || 0), 0)}
               </p>
             </div>
             <div style={{
@@ -285,7 +256,7 @@ export default function CustomersTab() {
                   <strong>{customer.totalOrders}</strong>
                 </td>
                 <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--edirne)' }}>
-                  {customer.totalSpent}
+                  ₺{(customer.totalSpent || 0).toLocaleString('tr-TR')}
                 </td>
                 <td style={{ padding: '1rem', color: '#6c757d' }}>
                   {new Date(customer.joinDate).toLocaleDateString('tr-TR')}
@@ -308,10 +279,10 @@ export default function CustomersTab() {
                 </td>
                 <td style={{ padding: '1rem' }}>
                   <button
-                    onClick={() => handleToggleStatus(customer.id)}
+                    onClick={() => handleDeleteCustomer(customer.id)}
                     style={{
                       padding: '0.5rem 1rem',
-                      background: customer.status === 'active' ? '#dc3545' : '#28a745',
+                      background: '#dc3545',
                       color: '#fff',
                       border: 'none',
                       borderRadius: '6px',
@@ -319,7 +290,7 @@ export default function CustomersTab() {
                       fontSize: '0.85rem'
                     }}
                   >
-                    {customer.status === 'active' ? 'Engelle' : 'Aktif Et'}
+                    Sil
                   </button>
                 </td>
               </tr>

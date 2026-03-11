@@ -442,5 +442,125 @@ export const api = {
       throw error;
     }
   },
+
+  // Coupons
+  getAllCoupons: async () => {
+    const token = getAuthToken();
+    try {
+      return await fetchWithErrorHandling(`${API_BASE_URL}/coupons`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (error) {
+      console.error('Error fetching coupons:', error);
+      return [];
+    }
+  },
+
+  createCoupon: async (couponData) => {
+    const token = getAuthToken();
+    return fetchWithErrorHandling(`${API_BASE_URL}/coupons`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(couponData),
+    });
+  },
+
+  updateCoupon: async (id, couponData) => {
+    const token = getAuthToken();
+    return fetchWithErrorHandling(`${API_BASE_URL}/coupons/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(couponData),
+    });
+  },
+
+  deleteCoupon: async (id) => {
+    const token = getAuthToken();
+    return fetchWithErrorHandling(`${API_BASE_URL}/coupons/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+  },
+
+  // Blog Posts
+  getAllBlogPosts: async () => {
+    const token = getAuthToken();
+    try {
+      return await fetchWithErrorHandling(`${API_BASE_URL}/blog/all`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+      return [];
+    }
+  },
+
+  createBlogPost: async (postData) => {
+    const token = getAuthToken();
+    return fetchWithErrorHandling(`${API_BASE_URL}/blog`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(postData),
+    });
+  },
+
+  updateBlogPost: async (id, postData) => {
+    const token = getAuthToken();
+    return fetchWithErrorHandling(`${API_BASE_URL}/blog/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(postData),
+    });
+  },
+
+  deleteBlogPost: async (id) => {
+    const token = getAuthToken();
+    return fetchWithErrorHandling(`${API_BASE_URL}/blog/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+  },
+
+  toggleBlogPublish: async (id) => {
+    const token = getAuthToken();
+    return fetchWithErrorHandling(`${API_BASE_URL}/blog/${id}/publish`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+  },
+
+  // Newsletter subscribers
+  getNewsletterSubscribers: async () => {
+    const token = getAuthToken();
+    try {
+      return await fetchWithErrorHandling(`${API_BASE_URL}/newsletter/subscribers`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (error) {
+      console.error('Error fetching subscribers:', error);
+      return [];
+    }
+  },
+
+  getNewsletterCount: async () => {
+    try {
+      return await fetchWithErrorHandling(`${API_BASE_URL}/newsletter/count`);
+    } catch (error) {
+      console.error('Error fetching newsletter count:', error);
+      return 0;
+    }
+  },
 };
 
